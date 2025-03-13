@@ -37,6 +37,9 @@ jobs:
           git config --global user.email "gh-actions@github.com"
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
 
+      # Pull the latest changes from the remote repository
+      - run: git pull origin main --rebase
+      
       # Run your scraping script
       - run: npm run main
 
