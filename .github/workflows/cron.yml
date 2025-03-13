@@ -2,8 +2,7 @@ name: Cron Scrape
 
 on:
   schedule:
-    - cron: "*/10 * * * *" # Change to your preferred schedule
-
+    - cron: "*/10 * * * *" 
 permissions:
   contents: write
 
@@ -19,40 +18,35 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     steps:
-      # Checkout the code
-      - uses: actions/checkout@v3
-      
-      # Setup Node.js environment
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20.3.0
-
-      # Install dependencies
-      - run: npm install puppeteer-core
-
-      # Download and Setup Chromium for Puppeteer
-      - name: Download and Setup Chromium
-        run: |
-          wget https://github.com/chromium/chromium/releases/download/92.0.4515.159/chromium-92.0.4515.159-linux64.zip -O chromium.zip
-          unzip chromium.zip -d /usr/local/bin/
-          echo "PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chromium/chrome" >> $GITHUB_ENV
-
-      # Configure git for pushing changes
-      - run: |
-          git config --global user.name "gh-actions"
-          git config --global user.email "gh-actions@github.com"
-          git remote set-url origin https://git:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
-      
-      # Run your scraping script
-      - run: npm run main
-
-      # Pull the latest changes from the remote repository to avoid push errors
-      - name: Pull latest changes
-        run: git pull origin main --rebase
-
-      # Commit changes (even if no new changes are detected)
-      - run: git commit --allow-empty -am "update scraped.json"
-
-      # Push the changes to the repository
-      - run: git push
+       # Checkout the code
+       - uses: actions/checkout@v3
+       
+       # Setup Node.js environment
+       - name: Setup Node
+         uses: actions/setup-node@v3
+         with:
+           node-version: 20.3.0
+ 
+       # Install dependencies
+       - run: npm install puppeteer-core
+ 
+       # Download and install Chromium for Puppeteer
+       - name: Download and Setup Chromium
+         run: |
+           wget https://github.com/chromium/chromium/releases/download/92.0.4515.159/chromium-92.0.4515.159-linux64.zip -O chromium.zip
+           unzip chromium.zip -d /usr/local/bin/
+           echo "PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chromium/chrome" >> $GITHUB_ENV
+ 
+       # Configure git for pushing changes
+       - run: |
+           git config --global user.name "gh-actions"
+           git config --global user.email "gh-actions@github.com"
+           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
+ 
+       # Run your scraping script
+       - run: npm run main
+ 
+       # Commit and push scraped data
+       - run: |
+           git commit --allow-empty -am "update scraped.json"
+           git push
