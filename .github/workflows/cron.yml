@@ -31,11 +31,6 @@ jobs:
       # Install dependencies (including puppeteer)
       - run: npm install puppeteer
 
-       # Handle unstaged changes by committing or stashing
-      - name: Commit unstaged changes (if any)
-        run: |
-          git diff --exit-code || git commit --allow-empty -am "Temporary commit to handle unstaged changes"
-
       # Pull the latest changes from the remote repository before running the scraping script
       - name: Pull latest changes from main branch
         run: |
