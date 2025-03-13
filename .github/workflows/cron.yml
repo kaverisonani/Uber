@@ -28,18 +28,8 @@ jobs:
         with:
           node-version: 20.3.0
 
-      # Clear npm cache before installing dependencies
-      - run: npm cache clean --force
-
-      # Install dependencies with verbose logging
-      - run: npm install puppeteer-core --verbose
-
-      # Download and setup Chromium for Puppeteer
-      - name: Download and Setup Chromium
-        run: |
-          wget https://github.com/chromium/chromium/releases/download/92.0.4515.159/chromium-92.0.4515.159-linux64.zip -O chromium.zip
-          unzip chromium.zip -d /usr/local/bin/
-          echo "PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chromium/chrome" >> $GITHUB_ENV
+      # Install dependencies (install puppeteer with chromium)
+      - run: npm install puppeteer
 
       # Configure git for pushing changes
       - run: |
