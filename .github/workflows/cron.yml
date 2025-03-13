@@ -1,11 +1,8 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: Cron Scrape
 
 on:
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/10 * * * *" # Change to your preferred schedule
 
 permissions:
   contents: write
@@ -20,17 +17,37 @@ jobs:
     name: Run scrape.mjs and commit changes
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup Node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 20.3.0
-    - run: npm i
-    - run: |
-        git config --global user.name "gh-actions"
-        git config --global user.email "gh-actions@github.com"
-        git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
-    - run: npm run main
-    - run: git commit --allow-empty -am "update scraped.json"
-    - run: git push
+      # Checkout the code
+      - uses: actions/checkout@v3
+      
+      # Setup Node.js environment
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20.3.0
+
+      # Install dependencies
+      - run: npm install puppeteer-core
+
+      # Download and install Chromium for Puppeteer
+      - name: Download and Setup Chromium
+        run: |
+          wget https://github.com/chromium/chromium/releases/download/92.0.4515.159/chromium-92.0.4515.159-linux64.zip -O chromium.zip
+          unzip chromium.zip -d /usr/local/bin/
+          echo "PUPPETEER_EXECUTABLE_PATH=/usr/local/bin/chromium/chrome" >> $GITHUB_ENV
+
+      # Configure git for pushing changes
+      - run: |
+          git config --global user.name "gh-actions"
+          git config --global user.email "gh-actions@github.com"
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
+
+      # Run your scraping script
+      - run: npm run main
+
+      # Commit and push scraped data
+      - run: |
+          git commit --allow-empty -am "update scraped.json"
+          git push
