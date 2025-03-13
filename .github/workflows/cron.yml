@@ -43,11 +43,12 @@ jobs:
           git config --global user.name "gh-actions"
           git config --global user.email "gh-actions@github.com"
           git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
-
+      
       # Run your scraping script
       - run: npm run main
 
+       
       # Commit and push scraped data
       - run: |
           git commit --allow-empty -am "update scraped.json"
-           git push --force origin main
+           git push 
