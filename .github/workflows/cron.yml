@@ -28,7 +28,7 @@ jobs:
         with:
           node-version: 20.3.0
 
-      # Install dependencies (install puppeteer with chromium)
+      # Install dependencies (puppeteer will also install Chromium)
       - run: npm install puppeteer
 
       # Configure git for pushing changes
