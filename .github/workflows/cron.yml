@@ -29,25 +29,17 @@ jobs:
           node-version: 20.3.0
 
       # Install dependencies (including puppeteer)
-      - run: npm install puppeteer
-
-      # Pull the latest changes from the remote repository before running the scraping script
-      - name: Pull latest changes from main branch
-        run: |
-          git fetch origin
-          git checkout main
-          git pull origin main --rebase
-
-      
-      # Run your scraping script
-      - run: npm run main
+      - run: npm install puppeteer      
 
       # Configure git for pushing changes
       - run: |
-          git config --global user.name "gh-actions"
-          git config --global user.email "gh-actions@github.com"
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${{ secrets.GH_TOKEN }}@github.com/${{ github.repository }}.git
      
+     # Run your scraping script
+      - run: npm run main
+      
       # Commit and push scraped data
       - run: |
           git commit --allow-empty -am "update scraped.json"
