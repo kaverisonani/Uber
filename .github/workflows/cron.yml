@@ -43,4 +43,8 @@ jobs:
       # Commit and push scraped data
       - run: |
           git commit --allow-empty -am "update scraped.json"
-          git push
+
+      # Push the changes
+      - name: Push changes to repository
+        run: |
+          git push --verbose  # Adding verbose to get detailed output
