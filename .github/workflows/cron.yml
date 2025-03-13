@@ -2,7 +2,7 @@ name: Cron Scrape
 
 on:
   schedule:
-    - cron: "*/10 * * * *" # Change to your preferred schedule
+    - cron: "*/10 * * * *"  # Change to your preferred schedule
 
 permissions:
   contents: write
@@ -28,14 +28,14 @@ jobs:
         with:
           node-version: 20.3.0
 
-      # Install dependencies (puppeteer will also install Chromium)
+      # Install dependencies (including puppeteer)
       - run: npm install puppeteer
 
       # Configure git for pushing changes
       - run: |
           git config --global user.name "gh-actions"
           git config --global user.email "gh-actions@github.com"
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
 
       # Run your scraping script
       - run: npm run main
