@@ -5,8 +5,9 @@ import fs from 'fs';
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
-  headless: true, // Make sure it's headless mode
-  args: ['--no-sandbox', '--disable-setuid-sandbox'], // Disable sandbox
+  headless: true,
+  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // This ensures Puppeteer uses the correct Chromium binary
+  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'],
 });
 const page = (await browser.pages())[0];
 
