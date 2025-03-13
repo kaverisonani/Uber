@@ -5,10 +5,9 @@ import fs from 'fs';
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
-  headless: true,
-  executablePath: process.env.PUPPETEER_EXECUTABLE_PATH, // This ensures Puppeteer uses the correct Chromium binary
-  args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-extensions'],
-});
+	headless: true, // Make sure it's headless mode
+	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
+  });
 const page = (await browser.pages())[0];
 
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
