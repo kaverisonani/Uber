@@ -31,8 +31,18 @@ jobs:
       # Install dependencies (including puppeteer)
       - run: npm install puppeteer
 
-       # Pull the latest changes from the remote repository
-      - run: git pull origin main --rebase
+       # Handle unstaged changes by committing or stashing
+      - name: Commit unstaged changes (if any)
+        run: |
+          git diff --exit-code || git commit --allow-empty -am "Temporary commit to handle unstaged changes"
+
+      # Pull the latest changes from the remote repository before running the scraping script
+      - name: Pull latest changes from main branch
+        run: |
+          git fetch origin
+          git checkout main
+          git pull origin main --rebase
+
       
       # Run your scraping script
       - run: npm run main
