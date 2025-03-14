@@ -24,7 +24,9 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 20.3.0
-    - run: npm i
+    - run: npm install
+    - name: Install Puppeteer dependencies
+      run: sudo apt-get install -y wget curl unzip
     - run: |
         git config --global user.name "gh-actions"
         git config --global user.email "gh-actions@github.com"
