@@ -63,7 +63,7 @@ for (let i = 0; i < restaurants.length; i++) {
 			const deals = [];
 			for (const item of items.values()) {
 				// Check for promotion in the title or description indicating a deal
-				if (item.title.includes('Get 1 Free') || item.itemDescription.includes('Get 1 Free') || item.itemPromotion) {
+				if (item.title.includes('BOGO') || item.titleBadge.text.includes('BOGO') || item.itemPromotion) {
 					deals.push(item);
 				}
 			}
