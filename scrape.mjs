@@ -5,7 +5,8 @@ import fs from 'fs';
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
-	headless: 'new', // Make sure it's headless mode	
+	headless: 'new', // Make sure it's headless mode
+	args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 const page = (await browser.pages())[0];
 
