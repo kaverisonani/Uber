@@ -5,8 +5,8 @@ import fs from 'fs';
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
-	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing,
-	dumpio: true,
+	 headless: false,
+         dumpio: true
   });
 const page = (await browser.pages())[0];
 
