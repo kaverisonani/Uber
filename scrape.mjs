@@ -87,9 +87,4 @@ for (let i = 0; i < restaurants.length; i++) {
 
 //fs.writeFileSync('./scraped.json', JSON.stringify(allCompiled));
 console.log('Compiled data to be written:', allCompiled);
-if (allCompiled.length > 0) {
-  fs.writeFileSync('./scraped.json', JSON.stringify(allCompiled, null, 2)); // Beautify the JSON with indentation
-  console.log('Data written to scraped.json');
-} else {
-  console.log('No data to write to scraped.json');
-}
+fs.writeFileSync('./scraped.json', JSON.stringify(allCompiled)); 
