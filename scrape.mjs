@@ -12,7 +12,27 @@ const page = (await browser.pages())[0];
 
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
-console.log('getting nearby restaurants..');
+console.log(`Scraping from: ${feedURL}`);
+
+await page.goto(feedURL, { waitUntil: 'networkidle2' });
+
+const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
+await page.waitForSelector(cards);
+
+const restaurants = [];
+for (const el of await page.$$(cards)) {
+    const offer = await el.evaluate(e => e.querySelector('picture + div > div')?.textContent) || '';
+    console.log(`Found Offer: ${offer}`);
+
+    if (offer.includes('Get 1 Free') || offer.includes('Offers')) {
+        const url = await el.evaluate(e => e.querySelector('a').href);
+        console.log(`Adding restaurant: ${url}`);
+        restaurants.push(url);
+    }
+}
+
+console.log(`${restaurants.length} restaurants found!`);
+/*console.log('getting nearby restaurants..');
 await page.goto(feedURL);
 
 const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
@@ -26,7 +46,7 @@ for (const el of await page.$$(cards)) {
 	}
 }
 
-console.log(`${restaurants.length} potential restaurants with offers found! closing puppeteer...`);
+console.log(`${restaurants.length} potential restaurants with offers found! closing puppeteer...`);*/
 await browser.close();
 
 const allCompiled = [];
