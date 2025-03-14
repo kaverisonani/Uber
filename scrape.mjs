@@ -3,7 +3,20 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 
 console.log('Launching Puppeteer...');
-const browser = await puppeteer.launch({ headless: false });
+const browser = await puppeteer.launch({
+headless: true,  // Keep headless mode enabled
+  args: [
+    '--no-sandbox',
+    '--disable-setuid-sandbox',
+    '--disable-gpu',
+    '--disable-software-rasterizer',
+    '--window-size=1280x1024',
+    '--start-maximized',  // Simulate headful
+    '--disable-dev-shm-usage',
+    '--remote-debugging-port=9222'
+  ]
+});
+});
 const page = (await browser.pages())[0];
 
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
