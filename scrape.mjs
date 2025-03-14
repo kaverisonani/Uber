@@ -72,10 +72,10 @@ for (let i = 0; i < restaurants.length; i++) {
 				allCompiled.push(compiled);
 				console.log(`got data for ${compiled.name}: ${deals.length} deal(s) found`);
 			} else {
-				console.log(`no deals found for this restaurant`);
+				console.log(`no deals found for this restaurant1`);
 			}
 		} else {
-			console.log(`no deals found for this restaurant`);
+			console.log(`no deals found for this restaurant2`);
 		}
 	} catch (error) {
 		console.error(`Error scraping ${url}: ${error.message}`);
