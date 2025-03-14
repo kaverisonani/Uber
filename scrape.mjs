@@ -15,7 +15,7 @@ const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRk
 console.log('getting nearby restaurants..');
 await page.setGeolocation({"latitude":43.902334,"longitude":-78.903363});
 await page.emulateTimezone('America/Toronto');
-await page.goto(feedURL);
+await page.goto(feedURL, { waitUntil: 'networkidle2' });
 
 const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
 await page.waitForSelector(cards);
