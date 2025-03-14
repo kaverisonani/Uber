@@ -1,9 +1,10 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
 name: Cron Scrape
 
 on:
-  schedule:
-    - cron: "*/10 * * * *"  # Runs every 10 minutes
-  workflow_dispatch:  # Enables manual execution
+  workflow_dispatch
 
 permissions:
   contents: write
@@ -24,21 +25,11 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: 20.3.0
-    - run: npm install
-    - name: Install Puppeteer dependencies
-      run: sudo apt-get install -y wget curl unzip
+    - run: npm i
     - run: |
         git config --global user.name "gh-actions"
         git config --global user.email "gh-actions@github.com"
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
     - run: npm run main
-    - name: Debug UberEats Responses
-      run: |
-        for file in debug-*.html; do
-          echo "Debugging $file"
-          cat "$file" || echo "No debug file found"
-        done
-    - run: cat scraped.json  # Debugging: Print scraped data
-    - run: git add -f scraped.json debug-*.html
-    - run: git commit -m "update scraped.json" || echo "No changes to commit"
+    - run: git commit --allow-empty -am "update scraped.json"
     - run: git push
