@@ -4,13 +4,12 @@ import fs from 'fs';
 
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
+
 const browser = await puppeteer.launch({
-	headless: 'new', // Make sure it's headless mode
-	args: [ '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--ignore-certificate-errors',
-        '--disable-blink-features=AutomationControlled' ]
-  });
+        headless: false,  // Keep it visible for testing first
+        executablePath: 'C:/Program Files (x86)/Google/Chrome/Application/chrome.exe',  // Use real Chrome
+        userDataDir: 'C:/Users\kaver/AppData/Local/Google/Chrome/User'  // Use a real Chrome profile
+    });
 const page = (await browser.pages())[0];
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
