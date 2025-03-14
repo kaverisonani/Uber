@@ -58,7 +58,7 @@ for (let i = 0; i < restaurants.length; i++) {
 				}
 			}
 
-			console.log("Item structure:", JSON.stringify([...items.values()], null, 2));
+			//console.log("Item structure:", JSON.stringify([...items.values()], null, 2));
 
 			const deals = [];
 			for (const item of items.values()) {
