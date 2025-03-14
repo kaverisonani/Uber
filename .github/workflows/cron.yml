@@ -2,7 +2,8 @@ name: Cron Scrape
 
 on:
   schedule:
-    - cron: "*/10 * * * *"  # Set this to your preferred schedule
+    - cron: "*/10 * * * *"  # Runs every 10 minutes
+  workflow_dispatch:  # Enables manual execution
 
 permissions:
   contents: write
@@ -17,40 +18,19 @@ jobs:
     name: Run scrape.mjs and commit changes
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-
     steps:
     - uses: actions/checkout@v3
-
-    # Set up Node.js environment
-    - name: Setup Node.js
+    - name: Setup Node
       uses: actions/setup-node@v3
       with:
         node-version: 20.3.0
-
-    # Install dependencies including puppeteer and necessary libraries
-    - name: Install dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget curl
-        sudo apt-get install -y libglib2.0-0 libnss3 libx11-xcb1 libxcomposite1 libxrandr2 libgbm1
-        npm install
-
-    # Configure git for pushing changes
-    - name: Configure git
-      run: |
+    - run: npm i
+    - run: |
         git config --global user.name "gh-actions"
         git config --global user.email "gh-actions@github.com"
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
-
-    # Run the Puppeteer scraping script
-    - name: Run scrape.mjs
-      run: npm run main
-
-    # Commit the scraped data to the repository
-    - name: Commit scraped data
-      run: |
-        git commit --allow-empty -am "update scraped.json"
-
-    # Push the changes to the repository
-    - name: Push changes to repository
-      run: git push --verbose
+    - run: npm run main
+    - run: cat scraped.json  # Debugging: Print scraped data
+    - run: git add -f scraped.json
+    - run: git commit -m "update scraped.json" || echo "No changes to commit"
+    - run: git push
