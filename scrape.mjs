@@ -6,7 +6,7 @@ console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
 	headless: false // Make sure it's headless mode
-	//args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
+	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
   });
 const page = (await browser.pages())[0];
 
