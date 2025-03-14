@@ -20,9 +20,10 @@ await logIP();
 const browser = await puppeteer.launch({
     headless: true, // Running in headless mode
     args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--proxy-server=your-proxy-address' // Optional: Use a proxy if needed
+       "--no-sandbox", 
+    "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-extensions"
     ]
 });
 const page = (await browser.pages())[0];
