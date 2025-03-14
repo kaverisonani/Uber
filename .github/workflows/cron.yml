@@ -2,49 +2,57 @@ name: Cron Scrape
 
 on:
   schedule:
-    - cron: "*/10 * * * *"  # Change to your preferred schedule
+    - cron: "*/10 * * * *"  # Runs every 10 minutes (adjust as needed)
 
 permissions:
-  contents: write
+  contents: write  # Allows write access to the repository contents
 
 concurrency:
   group: scraper
-  cancel-in-progress: true
+  cancel-in-progress: true  # Ensures that only one job is running at a time
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+
     name: Run scrape.mjs and commit changes
     env:
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}  # Make sure your token is set in Secrets
 
     steps:
-      # Checkout the code
+      # Step 1: Checkout the code
       - uses: actions/checkout@v3
 
-      # Setup Node.js environment
+      # Step 2: Setup Node.js environment
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 20.3.0
+          node-version: '20.3.0'  # Specify your desired Node.js version
 
-      # Install dependencies (including puppeteer)
-      - run: npm install puppeteer      
+      # Step 3: Install dependencies, including puppeteer
+      - name: Install dependencies
+        run: |
+          npm install  # This will install all dependencies from package.json, including puppeteer
 
-      # Configure git for pushing changes
-      - run: |
+      # Step 4: Configure git for pushing changes
+      - name: Configure Git
+        run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
-          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
-     
-     # Run your scraping script
-      - run: npm run main
-      
-      # Commit and push scraped data
-      - run: |
-          git commit --allow-empty -am "update scraped.json"
+          git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
 
-      # Push the changes
+      # Step 5: Run your scraping script
+      - name: Run scraping script
+        run: |
+          npm run main  # Ensure you have a 'main' script defined in package.json
+
+      # Step 6: Commit and push the scraped data
+      - name: Commit changes
+        run: |
+          git add scraped.json  # Assuming your scraping script updates 'scraped.json'
+          git commit --allow-empty -m "Update scraped data"
+      
+      # Step 7: Push the changes back to the repository
       - name: Push changes to repository
         run: |
-          git push --verbose  # Adding verbose to get detailed output
+          git push --verbose  # Push changes back to the repository with verbose output
