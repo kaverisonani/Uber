@@ -53,9 +53,27 @@ const allCompiled = [];
 for (let i = 0; i < restaurants.length; i++) {
 	const url = restaurants[i];
 
-	console.log(`(${i+1}/${restaurants.length}) fetching ${url}...`);
+console.log(`(${i+1}/${restaurants.length}) Fetching ${url}...`);
 
-	try {
+try {
+    const response = await fetch(url, {
+        headers: { 'user-agent': 'Mozilla/5.0' }
+    });
+
+    const body = await response.text();
+    console.log(`Response length for ${url}: ${body.length}`);
+
+    if (body.length < 1000) {
+        console.log(`⚠️ Warning: Small response, might be blocked or different content!`);
+    }
+
+    fs.writeFileSync(`./debug-${i + 1}.html`, body);
+} catch (error) {
+    console.error(`Error fetching ${url}:`, error.message);
+}
+
+
+	/*try {
 		const body = await fetch(url, {
 			headers: {
 				'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
@@ -99,7 +117,7 @@ for (let i = 0; i < restaurants.length; i++) {
 		}
 	} catch (error) {
 		console.error(`Error scraping ${url}: ${error.message}`);
-	}
+	}*/
 
 	console.log('sleeping 3 seconds...');
 	await new Promise(r => setTimeout(r, 3000));
