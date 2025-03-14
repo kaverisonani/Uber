@@ -30,6 +30,8 @@ jobs:
         git config --global user.email "gh-actions@github.com"
         git remote set-url origin https://git:${GITHUB_TOKEN}@github.com/${{github.repository}}.git
     - run: npm run main
+    - name: Debug UberEats Response
+      run: cat debug-1.html || echo "No debug file found"
     - run: cat scraped.json  # Debugging: Print scraped data
     - run: git add -f scraped.json
     - run: git commit -m "update scraped.json" || echo "No changes to commit"
