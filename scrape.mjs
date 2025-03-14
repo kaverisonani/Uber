@@ -5,8 +5,7 @@ import fs from 'fs';
 console.log('launching puppeteer...');
 //const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
-	headless: 'new', // Make sure it's headless mode
-	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
+	headless: 'new', // Make sure it's headless mode	
   });
 const page = (await browser.pages())[0];
 
@@ -63,6 +62,7 @@ for (let i = 0; i < restaurants.length; i++) {
 
 			const deals = [];
 			for (const item of items.values()) {
+				console.log("Item structure:", JSON.stringify(item, null, 2));
 				if (item.itemPromotion) deals.push(item);
 			}
 			console.log(deals)
