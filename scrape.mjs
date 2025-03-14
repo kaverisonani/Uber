@@ -1,55 +1,92 @@
 import puppeteer from 'puppeteer';
+import fetch from 'node-fetch';
+import fs from 'fs';
 
-(async () => {
-    console.log("Launching Puppeteer...");
+console.log('launching puppeteer...');
+//const browser = await puppeteer.launch({ headless: 'new' });
+const browser = await puppeteer.launch({
+	headless: 'new', // Make sure it's headless mode
+	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
+  });
+const page = (await browser.pages())[0];
 
-    // Use a proxy to avoid GitHub's IP ban
-    const PROXY_SERVER = "http://your-proxy-server:port"; // 🔄 Replace with actual proxy
+const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
-    const browser = await puppeteer.launch({
-        headless: true,
-        args: [
-            "--no-sandbox",
-            "--disable-setuid-sandbox",
-            `--proxy-server=${PROXY_SERVER}` // Use proxy to avoid getting blocked
-        ]
-    });
+console.log('getting nearby restaurants..');
+await page.goto(feedURL);
 
-    const page = await browser.newPage();
+const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
+await page.waitForSelector(cards);
 
-    // Set a mobile User-Agent to mimic a real user
-    await page.setUserAgent(
-        "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Mobile Safari/537.36"
-    );
+const restaurants = [];
+for (const el of await page.$$(cards)) {
+	const offer = await el.evaluate(e => e.querySelector('picture + div > div')?.textContent) || '';
+	if (offer.includes('Get 1 Free') || offer.includes('Offers')) {
+		restaurants.push(await el.evaluate(e => e.querySelector('a').href));
+	}
+}
 
-    try {
-        console.log("Fetching UberEats...");
-        await page.goto("https://www.ubereats.com/", {
-            waitUntil: "domcontentloaded",
-            timeout: 60000 // Increased timeout
-        });
+console.log(`${restaurants.length} potential restaurants with offers found! closing puppeteer...`);
+await browser.close();
 
-        // Wait for specific element to ensure page has loaded
-        await page.waitForSelector("div", { timeout: 10000 });
+const allCompiled = [];
+for (let i = 0; i < restaurants.length; i++) {
+	const url = restaurants[i];
 
-        console.log("Page loaded successfully!");
+	console.log(`(${i+1}/${restaurants.length}) fetching ${url}...`);
 
-        // Extract data (Modify as per requirement)
-        const data = await page.evaluate(() => {
-            return [...document.querySelectorAll("div")].map(div => div.textContent);
-        });
+	try {
+		const body = await fetch(url, {
+			headers: {
+				'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+			},
+		}).then(res => res.text());
+		const reactData = body.match(/__REACT_QUERY_STATE__">(.*?)<\/script>/s)?.[1];
+		const rawData = reactData && JSON.parse(decodeURIComponent(JSON.parse(`"${reactData.trim()}"`)));
+		const data = rawData?.queries?.[0]?.state?.data;
+		const section = data?.sections?.[0];
 
-        console.log("Extracted data:", data);
+		if (data && section && section.isOnSale && data.catalogSectionsMap[section.uuid]) {
+			const items = new Map();
+			for (const { payload } of data.catalogSectionsMap[section.uuid]) {
+				// Add a check here to make sure `payload.standardItemsPayload` and `payload.standardItemsPayload.catalogItems` exist
+				if (payload.standardItemsPayload?.catalogItems) {
+					for (const item of payload.standardItemsPayload.catalogItems) {
+						items.set(item.uuid, item);
+					}
+				} else {
+					console.log(`No catalog items found for ${url}`);
+				}
+			}
 
-        // Save data to JSON file
-        import fs from "fs";
-        fs.writeFileSync("scraped.json", JSON.stringify(data, null, 2));
+			//console.log("Item structure:", JSON.stringify([...items.values()], null, 2));
 
-        console.log("Data saved to scraped.json!");
+			const deals = [];
+			for (const item of items.values()) {
+				if (item.itemPromotion) deals.push(item);
+			}
+			console.log(deals)
 
-    } catch (error) {
-        console.error("Error:", error);
-    } finally {
-        await browser.close();
-    }
-})();
+			if (deals.length) {
+				const compiled = JSON.parse(data.metaJson);
+				compiled.deals = deals;
+				delete compiled.hasMenu;
+
+				allCompiled.push(compiled);
+				//console.log(`got data for ${compiled.name}: ${deals.length} deal(s) found`);
+			} else {
+				console.log(`no deals found for this restaurant`);
+			}
+		} else {
+			console.log(`no deals found for this restaurant`);
+		}
+	} catch (error) {
+		console.error(`Error scraping ${url}: ${error.message}`);
+	}
+
+	console.log('sleeping 3 seconds...');
+	await new Promise(r => setTimeout(r, 3000));
+}
+
+console.log('Compiled data to be written:', allCompiled);
+fs.writeFileSync('./scraped.json', JSON.stringify(allCompiled));
