@@ -13,6 +13,8 @@ const page = (await browser.pages())[0];
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
 console.log('getting nearby restaurants..');
+await page.setGeolocation({"latitude":43.902334,"longitude":-78.903363});
+await page.emulateTimezone('America/Toronto');
 await page.goto(feedURL);
 
 const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
