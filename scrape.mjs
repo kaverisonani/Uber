@@ -3,11 +3,10 @@ import fetch from 'node-fetch';
 import fs from 'fs';
 
 console.log('launching puppeteer...');
-//const browser = await puppeteer.launch({ headless: 'new' });
 const browser = await puppeteer.launch({
 	headless: true, // Make sure it's headless mode
 	args: ['--no-sandbox', '--disable-setuid-sandbox'] // Disable sandboxing
-  });
+});
 const page = (await browser.pages())[0];
 
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
@@ -60,13 +59,15 @@ for (let i = 0; i < restaurants.length; i++) {
 			}
 
 			console.log("Item structure:", JSON.stringify([...items.values()], null, 2));
-			console.log(JSON.stringify(item.itemPromotion));
 
 			const deals = [];
 			for (const item of items.values()) {
-				if (item.itemPromotion) deals.push(item);
+				// Check for promotion in the title or description indicating a deal
+				if (item.title.includes('Get 1 Free') || item.itemDescription.includes('Get 1 Free') || item.itemPromotion) {
+					deals.push(item);
+				}
 			}
-			console.log(deals)
+			console.log(deals);
 
 			if (deals.length) {
 				const compiled = JSON.parse(data.metaJson);
@@ -74,7 +75,6 @@ for (let i = 0; i < restaurants.length; i++) {
 				delete compiled.hasMenu;
 
 				allCompiled.push(compiled);
-				//console.log(`got data for ${compiled.name}: ${deals.length} deal(s) found`);
 			} else {
 				console.log(`no deals found for this restaurant`);
 			}
