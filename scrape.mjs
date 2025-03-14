@@ -11,10 +11,10 @@ const page = (await browser.pages())[0];
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
 console.log(`Scraping from: ${feedURL}`);
-await page.goto(feedURL, { waitUntil: 'networkidle2' });
+await page.goto(feedURL, { waitUntil: 'networkidle2', timeout: 60000 }); // Increased timeout
 
 const cards = 'div:has(> div > div > div > a[data-testid="store-card"])';
-await page.waitForSelector(cards);
+await page.waitForSelector(cards, { timeout: 30000 }); // Wait for cards to load
 
 const restaurants = [];
 for (const el of await page.$$(cards)) {
@@ -35,16 +35,15 @@ const allCompiled = [];
 for (let i = 0; i < restaurants.length; i++) {
     const url = restaurants[i];
 
-    console.log(`(${i+1}/${restaurants.length}) Fetching ${url} with Puppeteer...`);
+    console.log(`(${i + 1}/${restaurants.length}) Fetching ${url} with Puppeteer...`);
 
     try {
-        // Use Puppeteer instead of fetch() to avoid blocking
         const browser = await puppeteer.launch({
             headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox']
         });
         const page = await browser.newPage();
-        await page.goto(url, { waitUntil: 'networkidle2' });
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 }); // Increased timeout
 
         // Save HTML for debugging
         const body = await page.content();
