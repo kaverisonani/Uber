@@ -11,13 +11,7 @@ const browser = await puppeteer.launch({
     '--disable-gpu', // might help with rendering issues
     '--window-size=1280,1024',]
   });
-try{
-	const page = (await browser.pages())[0];
- console.log('Page loaded successfully!');
-} catch (error) {
-  console.error('Error loading page:', error);
-}
-
+const page = (await browser.pages())[0];
 const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
 console.log('getting nearby restaurants..');
