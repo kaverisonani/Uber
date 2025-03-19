@@ -1,8 +1,10 @@
-import fetch from 'node-fetch'; 
+import { Builder, By, until } from 'selenium-webdriver';
+import fs from 'fs';
+import fetch from 'node-fetch';  // If using Node.js < 18
 
-const { Builder, By, until } = require('selenium-webdriver');
+//const { Builder, By, until } = require('selenium-webdriver');
 //const fetch = globalThis.fetch;
-const fs = require('fs');
+//const fs = require('fs');
 
 (async function scrapeUberEats() {
     console.log('Launching Selenium...');
