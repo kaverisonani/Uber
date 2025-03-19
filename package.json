@@ -1,26 +1,7 @@
 {
-  "name": "ubereats-scraper",
-  "version": "1.0.0",
-  "description": "A scraper for UberEats to get deals from nearby restaurants",
-  "main": "scrape.mjs",
-  "scripts": {
-    "start": "node scrape.mjs",
-    "dev": "nodemon scrape.mjs"
-  },
-  "keywords": ["ubereats", "scraper", "puppeteer", "deals"],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.6.1",
-    "puppeteer-extra": "^3.1.9",
-    "puppeteer-extra-plugin-stealth": "^2.9.1",
-    "fs": "0.0.1"
-  },
-  "devDependencies": {
-    "puppeteer": "^22.2.0",
-    "nodemon": "^2.0.7"
-  },
-  "engines": {
-    "node": ">=14.0.0"
+    "chromedriver": "^134.0.3",
+    "node-fetch": "^3.3.2",
+    "selenium-webdriver": "^4.29.0"
   }
 }
