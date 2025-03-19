@@ -1,7 +1,5 @@
-import { Builder, By, until } from 'selenium-webdriver';
-import fs from 'fs';
-import fetch from 'node-fetch';  // If using Node.js < 18
-import chrome from 'selenium-webdriver/chrome';
+import { Builder } from 'selenium-webdriver';
+import chrome from 'selenium-webdriver/chrome.js'; 
 
 //const { Builder, By, until } = require('selenium-webdriver');
 //const fetch = globalThis.fetch;
