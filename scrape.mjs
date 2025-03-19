@@ -8,16 +8,18 @@ import chrome from 'selenium-webdriver/chrome.js';
 (async function scrapeUberEats() {
     console.log('Launching Selenium...');
     
-   // let driver = await new Builder().forBrowser('chrome').build();
-    const options = new chrome.Options();
-options.addArguments('--no-sandbox', '--disable-dev-shm-usage'); // Prevent resource issues
-options.addArguments(`--user-data-dir=/tmp/selenium-user-${Date.now()}`); // Unique user data dir
+// Create unique user data directory
+const uniqueUserDataDir = `/tmp/selenium-user-${Date.now()}`;
+
+const options = new chrome.Options();
+options.addArguments('--no-sandbox', '--disable-dev-shm-usage');
+options.addArguments(`--user-data-dir=${uniqueUserDataDir}`); // Unique profile directory
 
 const driver = await new Builder()
   .forBrowser('chrome')
   .setChromeOptions(options)
   .build();
-
+    
     try {
         const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
 
