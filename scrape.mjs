@@ -1,6 +1,7 @@
 import { Builder, By, until } from 'selenium-webdriver';
 import fs from 'fs';
 import fetch from 'node-fetch';  // If using Node.js < 18
+import chrome from 'selenium-webdriver/chrome';
 
 //const { Builder, By, until } = require('selenium-webdriver');
 //const fetch = globalThis.fetch;
@@ -9,7 +10,15 @@ import fetch from 'node-fetch';  // If using Node.js < 18
 (async function scrapeUberEats() {
     console.log('Launching Selenium...');
     
-    let driver = await new Builder().forBrowser('chrome').build();
+   // let driver = await new Builder().forBrowser('chrome').build();
+    const options = new chrome.Options();
+options.addArguments('--no-sandbox', '--disable-dev-shm-usage'); // Prevent resource issues
+options.addArguments(`--user-data-dir=/tmp/selenium-user-${Date.now()}`); // Unique user data dir
+
+const driver = await new Builder()
+  .forBrowser('chrome')
+  .setChromeOptions(options)
+  .build();
 
     try {
         const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
