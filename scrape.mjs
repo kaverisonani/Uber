@@ -2,13 +2,16 @@ import { Builder, By, until } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
 import fs from 'fs';
 import path from 'path';
+import { rmSync } from 'fs';
 
 // Create a unique user data directory with a timestamp and random value
 const uniqueUserDataDir = path.join('/tmp', `selenium-user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
 
-if (!fs.existsSync(uniqueUserDataDir)) {
-  fs.mkdirSync(uniqueUserDataDir, { recursive: true }); // Ensure the directory is created
+if (fs.existsSync(uniqueUserDataDir)) {
+  rmSync(uniqueUserDataDir, { recursive: true, force: true }); // Clean the directory if it exists
 }
+
+fs.mkdirSync(uniqueUserDataDir, { recursive: true }); // Create a new directory
 
 console.log(`Launching Selenium with user data dir: ${uniqueUserDataDir}`);
 
