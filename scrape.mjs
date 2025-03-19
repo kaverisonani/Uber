@@ -1,5 +1,7 @@
+import fetch from 'node-fetch'; 
+
 const { Builder, By, until } = require('selenium-webdriver');
-const fetch = globalThis.fetch;
+//const fetch = globalThis.fetch;
 const fs = require('fs');
 
 (async function scrapeUberEats() {
