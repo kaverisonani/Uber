@@ -1,24 +1,26 @@
 import { Builder } from 'selenium-webdriver';
-import chrome from 'selenium-webdriver/chrome.js'; 
+import chrome from 'selenium-webdriver/chrome.js';
+import fs from 'fs';
+import path from 'path';
 
-//const { Builder, By, until } = require('selenium-webdriver');
-//const fetch = globalThis.fetch;
-//const fs = require('fs');
+// Create a unique user data directory with a timestamp and random value
+const uniqueUserDataDir = path.join('/tmp', `selenium-user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`);
 
-(async function scrapeUberEats() {
-    console.log('Launching Selenium...');
-    
-// Create unique user data directory
-const uniqueUserDataDir = `/tmp/selenium-user-${Date.now()}`;
+if (!fs.existsSync(uniqueUserDataDir)) {
+  fs.mkdirSync(uniqueUserDataDir, { recursive: true }); // Ensure the directory is created
+}
+
+console.log(`Launching Selenium with user data dir: ${uniqueUserDataDir}`);
 
 const options = new chrome.Options();
 options.addArguments('--no-sandbox', '--disable-dev-shm-usage');
-options.addArguments(`--user-data-dir=${uniqueUserDataDir}`); // Unique profile directory
+options.addArguments(`--user-data-dir=${uniqueUserDataDir}`); // Use the unique directory
 
 const driver = await new Builder()
   .forBrowser('chrome')
   .setChromeOptions(options)
   .build();
+
     
     try {
         const feedURL = 'https://www.ubereats.com/feed?diningMode=PICKUP&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjQ3OCUyMFJpbW9zYSUyMENydCUyMiUyQyUyMnJlZmVyZW5jZSUyMiUzQSUyMmU2NTExNTk5LWYxMWEtY2Q3MC0xZTViLTFmNjA1Njg2YjdkNCUyMiUyQyUyMnJlZmVyZW5jZVR5cGUlMjIlM0ElMjJ1YmVyX3BsYWNlcyUyMiUyQyUyMmxhdGl0dWRlJTIyJTNBNDMuOTAyMzM0JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTc4LjkwMzM2MyU3RA';
