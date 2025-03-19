@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "main": "node scrape.mjs"
+  },
   "dependencies": {
     "chromedriver": "^134.0.3",
     "node-fetch": "^3.3.2",
